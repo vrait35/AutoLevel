@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace AutoLevel
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            DataSet dataSet = new DataSet("shopDb");
+            //DataTable usersTable = new DataTable("users");
+            //dataSet.Tables.Add(usersTable);
+       //     usersTable.Columns.AddRange(new DataColumn[]
+       //     {
+       //     new DataColumn{
+       //         ColumnName="id",
+       //         AllowDBNull=false,
+       //         AutoIncrement=true,
+       //         AutoIncrementSeed=1,
+       //         AutoIncrementStep=1,
+       //         Unique=true,
+       //         DataType=typeof(int)
+       //     },
+       //      new DataColumn{
+       //         ColumnName="login",
+       //         AllowDBNull=false,
+       //         Unique=true,
+       //         DataType=typeof(string)
+       //     },
+       //      new DataColumn{
+       //         ColumnName="password",
+       //         AllowDBNull=false,
+       //         Unique=true,
+       //         DataType=typeof(string)
+       //     }
+       // });
+
+            //DataRow firstRow = usersTable.NewRow();
+            //firstRow.BeginEdit();
+            //firstRow.ItemArray =new object[] {1,"admin","123456"};
+            //firstRow.EndEdit();
+
+            //usersTable.Rows.Add(firstRow);
+
+            DataRelation dataRelation = new DataRelation("user_person_relation",
+               "people",
+               "users",
+               new string[] { "id" },
+               new string[] { "userId" },
+               false);
+
+           SqlDataAdapter adapter = new SqlDataAdapter("select*from users", @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\темирбулата\source\repos\AutoLevel\AutoLevel\ProgramDb.mdf;Integrated Security=True");
+
+            SqlCommandBuilder sqlCommandBuilder = new SqlCommandBuilder(adapter);
+            adapter.Fill(dataSet);
+            DataRow forstRow = dataSet.Tables[0].NewRow();
+
+            forstRow.BeginEdit();
+            forstRow.ItemArray = new object[] { 4, "admin4", "12345" };
+            forstRow.EndEdit();
+
+            dataSet.Tables[0].Rows.Add(forstRow);
+            adapter.Update(dataSet); 
+        }
+    }
+}
